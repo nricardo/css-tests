@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MC Loader</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <div id="loader"></div>
+
+    <h1>MC Loader Example</h1>
+    <p>Click anywhere to toggle animation on / off.</p>
+    <p>Animation is: <span id="animationState"></span></p>
+  </body>
+  <script>
+    const animationChangedEvent = (state) =>
+      new CustomEvent("animationchanged", {
+        bubbles: true,
+        detail: state,
+      });
+
+    fetch("../loader.html")
+      .then((data) => data.text())
+      .then((mcLoader) => {
+        const loader = document.querySelector("#loader");
+
+        loader.innerHTML = mcLoader;
+        const circles = document.querySelectorAll(".mc-circle");
+
+        circles.forEach((circle) => {
+          circle.addEventListener("animationiteration", () => {
+            const animationState = loader.getAttribute("data-animation-state");
+            if (animationState === "stop") {
+              circle.getAnimations().forEach((anim) => anim.pause());
+              circle.dispatchEvent(animationChangedEvent(animationState));
+            }
+          });
+        });
+
+        const setupAnimation = (animationState) => {
+          loader.setAttribute("data-animation-state", animationState);
+          circles.forEach((circle) => {
+            circle.getAnimations().forEach((anim) => {
+              if (animationState === "stop") {
+                anim.playbackRate = 1.5;
+              } else {
+                anim.play();
+                anim.playbackRate = 1;
+                circle.dispatchEvent(animationChangedEvent(animationState));
+              }
+            });
+          });
+        };
+
+        document.addEventListener("click", () => {
+          const animationState =
+            loader.getAttribute("data-animation-state") ?? "run";
+          requestAnimationFrame(() =>
+            setupAnimation(animationState === "stop" ? "run" : "stop")
+          );
+        });
+
+        document.addEventListener("animationchanged", (e) => {
+          if (e.detail === "stop")
+            document.querySelector("#animationState").innerHTML = "stopped!";
+          else
+            document.querySelector("#animationState").innerHTML = "running....";
+        });
+
+        setupAnimation("run");
+      });
+  </script>
+</html>
