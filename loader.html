@@ -1,0 +1,65 @@
+<style>
+  #mc-loader {
+    --speed: 2s;
+    --radius: 120px;
+
+    /* Mastercard colors */
+    --mc-red: #eb001b;
+    --mc-yellow: #f79e1b;
+
+    width: var(--radius);
+    height: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px dashed white; */
+    border-radius: 50%;
+    perspective: 300px;
+    mix-blend-mode: hard-light;
+    transform-style: preserve-3d;
+    /* transform: rotateX(-15deg) rotateY(0deg); */
+    animation: spin var(--speed) linear infinite;
+  }
+
+  .mc-circle {
+    width: var(--radius);
+    height: var(--radius);
+    border-radius: 50%;
+    /* opacity: 0.6; */
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+    mix-blend-mode: hard-light;
+    transform: translateX(var(--translationX));
+    animation: spin var(--speed) linear infinite;
+  }
+
+  .mc-circle:nth-of-type(1) {
+    background-color: var(--mc-red);
+    --translation: calc(var(--radius) / -3);
+  }
+
+  .mc-circle:nth-of-type(2) {
+    background-color: var(--mc-yellow);
+    --translation: calc(var(--radius) / 3);
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotateY(0deg) translateX(var(--translation)) rotateY(360deg);
+    }
+    50% {
+      transform: rotateY(180deg) translateX(var(--translation)) rotateY(180deg);
+    }
+    to {
+      transform: rotateY(360deg) translateX(var(--translation)) rotateY(0deg);
+    }
+  }
+</style>
+
+<div id="mc-loader">
+  <div class="mc-circle"></div>
+  <div class="mc-circle"></div>
+</div>
